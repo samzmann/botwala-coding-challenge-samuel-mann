@@ -10,10 +10,7 @@ export default class BlockSimple extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     const t = Date.now()/1000
-    console.log(t);
-    console.log(this.props.data.time);
     this.setState({
       secondsAgo: t - this.props.data.time
     })
@@ -34,10 +31,19 @@ export default class BlockSimple extends Component {
 
   render(){
     return(
-      <div className="block-simple-outer">
+      <div style={styles.container} onClick={() => {this.props.getBlockDetail(this.props.data.hash)}}>
         {this.renderTime()}
+        <div style={{width: 10}}/>
         {this.renderShortHash()}
       </div>
     )
+  }
+}
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    cursor: 'pointer'
   }
 }

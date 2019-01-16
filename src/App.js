@@ -25,13 +25,23 @@ class App extends Component {
     })
   }
 
+  handleGetBlockDetail = (hash) => {
+    console.log('getting detail...');
+    getBlockDetail(hash, (res) => {
+      if (res.success) {
+        console.log(res.success);
+      } else {
+        console.log(res.error);
+      }
+    })
+  }
+
   blockList = () => {
     const {blocks} = this.state
     const listItem = blocks.map(item => {
-      console.log(item);
       return (
-        <li>
-          <BlockSimple data={item} />
+        <li key={item.hash}>
+          <BlockSimple data={item} getBlockDetail={this.handleGetBlockDetail}/>
         </li>
       )
     })
@@ -40,7 +50,6 @@ class App extends Component {
       <ul>{listItem}</ul>
     )
   }
-
 
   render() {
 
