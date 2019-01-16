@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { getBlocks, getBlockDetail } from './api'
+import { getBlocks } from './api'
+
 import BlockSimple from './Components/BlockSimple'
 
 class App extends Component {
@@ -25,43 +26,78 @@ class App extends Component {
     })
   }
 
-  handleGetBlockDetail = (hash) => {
-    console.log('getting detail...');
-    getBlockDetail(hash, (res) => {
-      if (res.success) {
-        console.log(res.success);
-      } else {
-        console.log(res.error);
-      }
+  // Hide other blocks' details when user clicks to view detail
+  hideOtherBlockDetails = (hash) => {
+    const blocks = this.state.blocks.filter(el => {return el.hash != hash})
+    blocks.forEach(item => {
+      this.BlocksRef[`BLOCKS_${item.hash}`].hideDetail()
     })
   }
 
+  // renders the list of blocks
   blockList = () => {
     const {blocks} = this.state
     const listItem = blocks.map(item => {
       return (
-        <li key={item.hash}>
-          <BlockSimple data={item} getBlockDetail={this.handleGetBlockDetail}/>
-        </li>
+        <div key={item.hash}>
+          <BlockSimple
+            ref={(ref) => this.BlocksRef = {...this.BlocksRef, [`BLOCKS_${item.hash}`]: ref}}
+            data={item}
+            hideOtherBlockDetails={this.hideOtherBlockDetails}
+            />
+            <div style={{height: 1, background: 'lightgrey', margin: 10}} />
+        </div>
       )
     })
 
     return (
-      <ul>{listItem}</ul>
+      <div style={styles.list}>{listItem}</div>
     )
   }
 
   render() {
 
     return (
-      <div className="App">
+      <div className="App" style={styles.container}>
 
-        <div>Block Xplor</div>
+        <div style={styles.inner}>
+
+          <div style={{height: 20}} />
+
+          <div style={styles.title}>Block Xplor</div>
+
+          <div style={{height: 40}} />
 
           {this.blockList()}
 
+          <button onClick={() => {console.log('this button does nothing 😓')}}>Load more</button>
+
+        </div>
+
       </div>
     );
+  }
+}
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    background: '#f8f8f8',
+    color: '#333',
+  },
+  inner: {
+    alignSelf: 'center',
+    width: 750
+  },
+  title: {
+    fontSize: 30,
+  },
+  list: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'space-between'
   }
 }
 
