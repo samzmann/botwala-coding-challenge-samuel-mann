@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { getBlocksAsync } from './api'
+import { getBlocks, getBlockDetail } from './api'
 import BlockSimple from './Components/BlockSimple'
 
 class App extends Component {
@@ -16,23 +16,13 @@ class App extends Component {
 
   componentDidMount(){
 
-    this.getBlocks()
-  }
-
-  getBlocks = () => {
-    const url = 'https://blockchain.info/blocks?format=json'
-    fetch(url)
-      .then(res => res.json())
-      .then(resJson => {
-        console.log(resJson);
-        this.setState({ blocks: resJson.blocks})
-
-      })
-      .catch(err => {
-        console.error(err);
-        Promise.reject(err)
-      });
-
+    getBlocks(res => {
+      if (res.success) {
+        this.setState({ blocks: res.success.blocks})
+      } else {
+        console.log(res.error);
+      }
+    })
   }
 
   blockList = () => {
@@ -45,7 +35,7 @@ class App extends Component {
         </li>
       )
     })
-    
+
     return (
       <ul>{listItem}</ul>
     )
